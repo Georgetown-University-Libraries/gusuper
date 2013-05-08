@@ -1,0 +1,23 @@
+div.combo-snippet, div.combo-summary {
+	margin-left: 20px;
+}
+
+div.combo-summary {
+	font-style: italic; 
+}
+
+div.combo-result {
+	margin: 4px 0px;
+}
+
+div.gupurpose {
+	font-size: 11px;
+	border-bottom: 3px solid black;
+	margin-bottom: 15px;
+	height: 35px;
+	min-height: 35px;
+	line-height: 15px;
+	font-style: italic;
+	text-align: center;
+	padding-bottom: 8px;
+}

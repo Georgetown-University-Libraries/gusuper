@@ -1,0 +1,7 @@
+; $Id$
+name = GU Super Search: LibAnswers
+description = Search LibAnswers
+package = LIT Custom Modules
+core = 7.x
+dependencies[] = gusuper
+configure = admin/config/guanswer

@@ -1,0 +1,197 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Search interface for URL aliases.
+ */
+
+include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
+
+class DSpaceSolrRepository extends ExternalRepository {
+	public $host = "localhost"; //intentionally not set to default since code is shared externally
+	public $port = "80";
+	public $path = "/solr/search";
+	public $highlight = "handle,dc.identifier.uri,name,dc.title,dc.title.en_US,dc.creator,dc.date.created_dt";
+	
+	public function __construct() {
+		parent::__construct("dspacesolr", 5,"DigitalGeorgetown SOLR", "Search DigitalGeorgetown via SOLR - DEV Server", "Georgetown University's digital collections, scholarship and the institutional repository");
+		$this->enabled = FALSE;
+	}
+
+	function getAdditionalParams(&$form) {
+		$v = $this->getVarName("host");
+		$form[$this->getVarBase()][$v] = array(
+			"#type" => "textfield",
+			"#title" => $this->name . t(" host"),
+			"#default_value" => variable_get($v, $this->host),
+			"#size" => 20,
+			"#maxlength" => 40,
+			"#description" => "Host name for the DSpace SOLR service.",
+			"#required" => TRUE
+		);
+
+		$v = $this->getVarName("port");
+		$form[$this->getVarBase()][$v] = array(
+			"#type" => "textfield",
+			"#title" => $this->name . t(" port"),
+			"#default_value" => variable_get($v, $this->port),
+			"#size" => 2,
+			"#maxlength" => 3,
+			"#description" => "Port number for the DSpace SOLR service.",
+			"#required" => TRUE
+		);
+
+		$v = $this->getVarName("path");
+		$form[$this->getVarBase()][$v] = array(
+			"#type" => "textfield",
+			"#title" => $this->name . t(" SOLR path"),
+			"#default_value" => variable_get($v, $this->path),
+			"#size" => 30,
+			"#maxlength" => 60,
+			"#description" => "Path to DSpace SOLR service for content docs (not statistics).",
+			"#required" => TRUE
+		);
+
+		$v = $this->getVarName("highlight");
+		$form[$this->getVarBase()][$v] = array(
+			"#type" => "textfield",
+			"#title" => $this->name . t(" fields to highlight"),
+			"#default_value" => variable_get($v, $this->highlight),
+			"#size" => 100,
+			"#maxlength" => 200,
+			"#description" => "Comma-separated list of DSpace fields to highlight.",
+			"#required" => TRUE
+		);
+	}
+	
+	function getSearchUiUrl() {
+		$host = $this->getVarValue("host", $this->host);
+		return "http://$host/search?query=";
+	}
+
+	function performSearch($query = null) {
+	  	$name =  $this->getVarValue("name", $this->name);
+	  	$host =  $this->getVarValue("host", $this->host);
+	  	$port =  $this->getVarValue("port", $this->port);
+	  	$path =  $this->getVarValue("path", $this->path);
+	  	$highlight =  $this->getVarValue("highlight", $this->highlight);
+	  	$header =  $this->getVarValue("header", $this->header);
+  		$purpose = $this->getVarValue("purpose", $this->purpose);
+
+		try {
+  			$my_solr_cli = new SolrClient(array("hostname" => $host, "port" => $port, "path" => $path));
+			$sq = new SolrQuery();
+  			$sq->setQuery($query);
+  			$sq->setStart(0);
+  			foreach(explode(",", $highlight) as $field) {
+  				$sq->addField($field);
+  			}
+  			$sq->setHighlight(true);
+  			$sq->addHighlightField("*");
+  			$sq->setHighlightSimplePre("<strong>");
+  			$sq->setHighlightSimplePost("</strong>");
+  			$qr = $my_solr_cli->query($sq);
+ 			$resp = $qr->getResponse()->response;
+  			$url = "http://$host/search?query=$query";
+
+  			$lc = $resp->numFound;
+  			$docs = $resp->docs;
+
+  			$max = variable_get("gusuper_max", ExternalRepository::$max); 
+  			
+  			$str = $this->generateResultHeader($lc, $query);
+  
+ 			print "<h2 class='gusearch'>$header</h2>";
+    		print "<div class='gupurpose'>$purpose</div>";
+  			print "<div class='combo-set'>";
+		  	print "<div class='combo-result'>";
+  			$count = 0;
+  			foreach($docs as $n) {
+ 				if ($cout++ >= $max) break;
+  				$uri = $n->offsetGet("dc.identifier.uri");
+  				$uri = $uri[0];
+  				$title = $n->offsetGet("dc.title.en_US");
+  				if (count($title) == 0) $title = $n->offsetGet("dc.title");
+  				if (count($title) == 0) $title = $n->offsetGet("name");
+  				$title = $title[0];
+  				if ($title == "") $title = "No title available";
+  				$creator = $n->offsetGet("dc.creator");
+  				$creator = $creator[0];
+  				$datecreated = $n->offsetGet("dc.date.created_dt");
+  				$datecreated = $datecreated[0];
+  	
+  				if ($datecreated != "") {
+  					$datecreated = "(".substr($datecreated,0,10).")";
+  				}
+  				if (($creator != "") || ($datecreated != ""))
+  	  				$tag = $creator . $datecreated . "<br/>";
+  				else 
+  	  				$tag = "";
+  	
+  				$handle = $n->offsetGet("handle");
+  	
+  				print "<div class='combo-title'>";
+  				print "<a href='http://$host/handle/$handle'>$title</a>";
+  				print "</div>";
+  	
+  				$snipobj = $qr->getResponse()->highlighting[$handle];
+  				$snip = $tag;
+  				
+  				if ($snipobj != null) {
+    			foreach($snipobj->getPropertyNames() as $k) {
+  					$v = implode(" ", $snipobj->offsetGet($k));
+   					if (substr_count($k, "en_US") > 0) {
+   		  				if (trim($v) != "") $snip.= $v . "<br/>";
+  					}
+  				}
+  				}
+  	
+  				print "<div class='combo-snippet'>$snip</div>";
+  				print "</div>";
+  			}
+  			print "</div>";
+  			print "<div class='combo-summary'>$str</div>";
+  			print "</div>";
+  			exit();
+  		} catch(Exception $e) {
+  			print "<div class='combo-summary'>" . variable_get("gusuper_msgunavail", ExternalRepository::$msgunavail) . "</div>";
+  			exit();  	
+  		}
+	}
+	public static $INSTANCE;
+	public static function getInstance() {
+		if (self::$INSTANCE == null) {
+			self::$INSTANCE = new DSpaceSolrRepository();
+		}
+		return self::$INSTANCE;
+	}
+}
+
+function gudspacesolr_gusuperrepos() {
+	return DSpaceSolrRepository::getInstance();
+}
+
+function gudspacesolr_admin_settings() {
+	$form = array();
+    $ext = DSpaceSolrRepository::getInstance();
+	$ext->getDefaultOptions($form);
+	$ext->getAdditionalParams($form);
+
+	return system_settings_form($form);
+}
+
+function gudspacesolr_menu() {
+    $ext = DSpaceSolrRepository::getInstance();
+	$items['gusuper/' . $ext->abbrev] = array(
+   		'page callback' => 'gusuper_' . $ext->abbrev,
+   		'access callback' => TRUE,
+   		'type' => MENU_NORMAL_ITEM,
+	);
+	return $ext->getConfigMenu("gudspacesolr", $items);
+}
+
+function gusuper_dspacesolr($query = null) {
+    $ext = DSpaceSolrRepository::getInstance();
+	$ext->performSearch($query);
+}

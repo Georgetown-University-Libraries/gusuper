@@ -1,0 +1,55 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Search interface for URL aliases.
+ */
+
+include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
+
+
+class LibAnswerRepository extends XslRepository {
+	public function __construct() {
+		parent::__construct("libanswer", 4, "Library FAQ", "Search FAQ pages", "");
+		$this->searchurl = "http://answers.library.georgetown.edu/search.php?question=";
+		$this->dispurl = "http://answers.library.georgetown.edu";
+		$this->xsl=drupal_get_path('module', 'guanswer') . "/libanswer.xsl";
+		$this->enabled = FALSE;
+	}
+	public static $INSTANCE;
+	public static function getInstance() {
+		if (self::$INSTANCE == null) {
+			self::$INSTANCE = new LibAnswerRepository();
+		}
+		return self::$INSTANCE;
+	}
+}
+
+function guanswer_admin_settings() {
+	$form = array();
+    $ext = LibAnswerRepository::getInstance();
+	$ext->getDefaultOptions($form);
+	$ext->getAdditionalParams($form);
+
+	return system_settings_form($form);
+}
+
+function guanswer_gusuperrepos() {
+	return LibAnswerRepository::getInstance();
+}
+
+function guanswer_menu() {
+    $ext = LibAnswerRepository::getInstance();
+	$items['gusuper/' . $ext->abbrev] = array(
+   		'page callback' => 'gusuper_' . $ext->abbrev,
+   		'access callback' => TRUE,
+   		'type' => MENU_NORMAL_ITEM,
+	);
+	return $ext->getConfigMenu("guanswer", $items);
+}
+
+function gusuper_libanswer($query = null) {
+    $ext = LibAnswerRepository::getInstance();
+	$ext->performSearch($query);
+}
