@@ -6,102 +6,102 @@
  * Search interface for URL aliases.
  */
 
-include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
+include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.inc";
 
 class LibSiteRepository extends ExternalRepository {
-	public $searchuiurl = "/search/apachesolr_search/";
-	public function __construct() {
-		parent::__construct("libsite", 1, "Library Website", "Search the full-text of library website content and documents attached to library website pages", "Libraries' resources, services, and policies");
-	}
+  public $searchuiurl = "/search/apachesolr_search/";
+  public function __construct() {
+    parent::__construct("libsite", 1, "Library Website", "Search the full-text of library website content and documents attached to library website pages", "Libraries' resources, services, and policies");
+  }
 
-	function getAdditionalParams(&$form) {
-		parent::getAdditionalParams($form);
-		
-		$v = $this->getVarName("searchuiurl");
-		$form[$this->getVarBase()][$v] = array(
-			"#type" => "textfield",
-			"#title" => $this->name . t(" user-friendly search URL prefix"),
-			"#default_value" => variable_get($v, $this->searchuiurl),
-			"#size" => 100,
-			"#maxlength" => 200,
-			"#description" => "Link that will be presented to the user to display more search results.  Search terms will be appended to this string.",
-			"#required" => TRUE
-		);
-	}
+  function getAdditionalParams(&$form) {
+    parent::getAdditionalParams($form);
+    
+    $v = $this->getVarName("searchuiurl");
+    $form[$this->getVarBase()][$v] = array(
+      "#type" => "textfield",
+      "#title" => $this->name . " " . t("user-friendly search URL prefix"),
+      "#default_value" => variable_get($v, $this->searchuiurl),
+      "#size" => 100,
+      "#maxlength" => 200,
+      "#description" => "Link that will be presented to the user to display more search results.  Search terms will be appended to this string.",
+      "#required" => TRUE
+    );
+  }
 
-	function getSearchUiUrl() {
-		return $this->getVarValue("searchuiurl",$this->searchuiurl);
-	}
+  function getSearchUiUrl() {
+    return $this->getVarValue("searchuiurl", $this->searchuiurl);
+  }
 
-	function performSearch($query = null) {
-  		$name = $this->getVarValue("name", $this->name);
-  		$header = $this->getVarValue("header", $this->header);
-  		$purpose = $this->getVarValue("purpose", $this->purpose);
- 		try{
-			$max = variable_get("gusuper_max", ExternalRepository::$max);
-			$searchuiurl = $this->getVarValue("searchuiurl", $this->searchuiurl);
-			$rlib = apachesolr_search_search_execute($query);
-			$lc = count($rlib);
-			$res=array_slice($rlib, 0, $max);
-			
-			$str = $this->generateResultHeader($lc, $query);
+  function performSearch($query = NULL) {
+      $name = $this->getVarValue("name", $this->name);
+      $header = $this->getVarValue("header", $this->header);
+      $purpose = $this->getVarValue("purpose", $this->purpose);
+     try{
+      $max = variable_get("gusuper_max", ExternalRepository::$max);
+      $searchuiurl = $this->getVarValue("searchuiurl", $this->searchuiurl);
+      $rlib = apachesolr_search_search_execute($query);
+      $lc = count($rlib);
+      $res=array_slice($rlib, 0, $max);
+      
+      $str = $this->generateResultHeader($lc, $query);
 
- 			print "<h2 class='gusearch'>$header</h2>";
-    		print "<div class='gupurpose'>$purpose</div>";
-   			print "<div class='combo-set'>";
-      		print "<div name='combo-results'>";
-			foreach($res as $r) {
-				$t = $r['title'];
-				$l = $r['link'];
-				$s = $r['snippet'];
-				
-				print "<div class='combo-result'>"; 
-				print "<div class='combo-title'><a href='$l'>$t</a></div>";
-				print "<div class='combo-snippet'>$s</div>";
-				print "</div>";
-			}
-			print "</div>";
-			print "<div class='combo-summary'>$str</div>";
-			print "</div>";
-    		exit();
-  		} catch(Exception $e) {
-  			print "<div class='combo-summary'>" . variable_get("gusuper_msgunavail", ExternalRepository::$msgunavail) . "</div>";
-  			exit();  	
-  		}
-	}
-	public static $INSTANCE;
-	public static function getInstance() {
-		if (self::$INSTANCE == null) {
-			self::$INSTANCE = new LibSiteRepository();
-		}
-		return self::$INSTANCE;
-	}
+       print "<h2 class='gusearch'>$header</h2>";
+        print "<div class='gupurpose'>$purpose</div>";
+         print "<div class='combo-set'>";
+          print "<div name='combo-results'>";
+      foreach ($res as $r) {
+        $t = $r['title'];
+        $l = $r['link'];
+        $s = $r['snippet'];
+        
+        print "<div class='combo-result'>"; 
+        print "<div class='combo-title'><a href='$l'>$t</a></div>";
+        print "<div class='combo-snippet'>$s</div>";
+        print "</div>";
+      }
+      print "</div>";
+      print "<div class='combo-summary'>$str</div>";
+      print "</div>";
+        exit();
+      } catch (Exception $e) {
+        print "<div class='combo-summary'>" . variable_get("gusuper_msgunavail", ExternalRepository::$msgunavail) . "</div>";
+        exit();    
+      }
+  }
+  public static $INSTANCE;
+  public static function getInstance() {
+    if (self::$INSTANCE == NULL) {
+      self::$INSTANCE = new LibSiteRepository();
+    }
+    return self::$INSTANCE;
+  }
 }
 
 function gusolr_gusuperrepos() {
-	return LibSiteRepository::getInstance();
+  return LibSiteRepository::getInstance();
 }
 
 function gusolr_admin_settings() {
-	$form = array();
+  $form = array();
     $ext = LibSiteRepository::getInstance();
-	$ext->getDefaultOptions($form);
-	$ext->getAdditionalParams($form);
+  $ext->getDefaultOptions($form);
+  $ext->getAdditionalParams($form);
 
-	return system_settings_form($form);
+  return system_settings_form($form);
 }
 
 function gusolr_menu() {
     $ext = LibSiteRepository::getInstance();
-	$items['gusuper/' . $ext->abbrev] = array(
-   		'page callback' => 'gusuper_' . $ext->abbrev,
-   		'access callback' => TRUE,
-   		'type' => MENU_NORMAL_ITEM,
-	);
-	return $ext->getConfigMenu("gusolr", $items);
+  $items['gusuper/' . $ext->abbrev] = array(
+       'page callback' => 'gusuper_' . $ext->abbrev,
+       'access callback' => TRUE,
+       'type' => MENU_NORMAL_ITEM,
+  );
+  return $ext->getConfigMenu("gusolr", $items);
 }
 
-function gusuper_libsite($query = null) {
+function gusuper_libsite($query = NULL) {
     $ext = LibSiteRepository::getInstance();
-	$ext->performSearch($query);
+  $ext->performSearch($query);
 }
