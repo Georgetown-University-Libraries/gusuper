@@ -1,7 +1,7 @@
 ; $Id$
 name = GU Super Search: LibGuide API
-description = Search LibGuides via API
 package = LIT Custom Modules
+description = Search LibGuides via API
 core = 7.x
 dependencies[] = gusuper
-configure = admin/config/gulibguideapi
+configure = admin/config/search/gulibguideapi

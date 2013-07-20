@@ -5,50 +5,50 @@
  * @file
  * Search interface for URL aliases.
  */
-include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.inc";
+include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
 
 class DSpaceHtmlRepository extends XslRepository {
-  public function __construct() {
-    parent::__construct("dspacehtml", 3, "DigitalGeorgetown", "Search DigitalGeorgetown communities, collections and items", "Georgetown University's digital collections, scholarship, and the institutional repository");
-    $this->searchurl = "http://repository.library.georgetown.edu/search?query=";
-    $this->dispurl = "http://repository.library.georgetown.edu/";
-    $this->xsl=drupal_get_path('module', 'gudspacehtml') . "/dspacehtml.xsl";
-  }
-  
-  public static $INSTANCE;
-  public static function getInstance() {
-    if (self::$INSTANCE == NULL) {
-      self::$INSTANCE = new DSpaceHtmlRepository();
-    }
-    return self::$INSTANCE;
-  }
+	public function __construct() {
+		parent::__construct("dspacehtml", 3, "DigitalGeorgetown", "Search DigitalGeorgetown communities, collections and items", "Georgetown University's digital collections, scholarship, and the institutional repository");
+		$this->searchurl = "http://repository.library.georgetown.edu/search?query=";
+		$this->dispurl = "http://repository.library.georgetown.edu/";
+		$this->xsl=drupal_get_path('module', 'gudspacehtml') . "/dspacehtml.xsl";
+	}
+	
+	public static $INSTANCE;
+	public static function getInstance() {
+		if (self::$INSTANCE == null) {
+			self::$INSTANCE = new DSpaceHtmlRepository();
+		}
+		return self::$INSTANCE;
+	}
 }
 
 function gudspacehtml_admin_settings() {
-  $form = array();
+	$form = array();
     $ext = DSpaceHtmlRepository::getInstance();
-  $ext->getDefaultOptions($form);
-  $ext->getAdditionalParams($form);
+	$ext->getDefaultOptions($form);
+	$ext->getAdditionalParams($form);
 
-  return system_settings_form($form);
+	return system_settings_form($form);
 }
 
 function gudspacehtml_menu() {
     $ext = DSpaceHtmlRepository::getInstance();
-  $items['gusuper/' . $ext->abbrev] = array(
-       'page callback' => 'gusuper_' . $ext->abbrev,
-       'access callback' => TRUE,
-       'type' => MENU_NORMAL_ITEM,
-  );
-  return $ext->getConfigMenu("gudspacehtml", $items);
+	$items['gusuper/' . $ext->abbrev] = array(
+   		'page callback' => 'gusuper_' . $ext->abbrev,
+   		'access callback' => TRUE,
+   		'type' => MENU_NORMAL_ITEM,
+	);
+	return $ext->getConfigMenu("gudspacehtml", $items);
 }
 
 function gudspacehtml_gusuperrepos() {
-  return DSpaceHtmlRepository::getInstance();
+	return DSpaceHtmlRepository::getInstance();
 }
 
-function gusuper_dspacehtml($query = NULL) {
+function gusuper_dspacehtml($query = null) {
     $ext = DSpaceHtmlRepository::getInstance();
-  $ext->performSearch($query);
+	$ext->performSearch($query);
 }
 

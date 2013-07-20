@@ -1,7 +1,7 @@
 ; $Id$
 name = GU Super Search: DSpace HTML
-description = Search DSpace and scrape html results
 package = LIT Custom Modules
+description = Search DSpace and scrape html results
 core = 7.x
 dependencies[] = gusuper
-configure = admin/config/gudspacehtml
+configure = admin/config/search/gudspacehtml

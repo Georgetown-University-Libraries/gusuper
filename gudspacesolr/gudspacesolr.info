@@ -1,7 +1,7 @@
 ; $Id$
 name = GU Super Search: DSpace SOLR
-description = Search DSpace via SOLR API
 package = LIT Custom Modules
+description = Search DSpace via SOLR API
 core = 7.x
 dependencies[] = gusuper
-configure = admin/config/gudspacesolr
+configure = admin/config/search/gudspacesolr

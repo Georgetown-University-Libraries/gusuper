@@ -1,9 +1,9 @@
 ; $Id$
 name = GU Super Search: Apache SOLR
-description = Search library website via ApacheSOLR
 package = LIT Custom Modules
+description = Search library website via ApacheSOLR
 core = 7.x
 dependencies[] = apachesolr
 dependencies[] = apachesolr_search
 dependencies[] = gusuper
-configure = admin/config/gusolr
+configure = admin/config/search/gusolr

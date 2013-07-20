@@ -6,42 +6,49 @@
  * Search interface for URL aliases.
  */
 
-include_once "gusuperclasses.inc";
+include_once "gusuperclasses.php";
 
-/*
+
 function gusuper_permission() {
   return array(
-    "title" => t('administer gusuper settings'),
-    "description" => t('administer gusuper settings'),
-  );
+    'administer gusuper settings' => array(
+      'title' => t('Administer Super Search'),
+      'description' => t('Perform administration tasks for GU Super Search.'),
+      'restrict access' => FALSE,
+    ),
+  );  
 } 
-*/
 
 function gusuper_admin_settings() {
-  return system_settings_form(ExternalRepository::getGlobalOptions());
+	return system_settings_form(ExternalRepository::getGlobalOptions());
 }
 
 function gusuper_menu() {
-  $items['gusuper/combotemplate'] = array(
-      'page callback' => 'gusuper_combotemplate',
-      'access callback' => TRUE,
-      'type' => MENU_NORMAL_ITEM,
-    );
+	$items['gusuper/combotemplate'] = array(
+    	'page callback' => 'gusuper_combotemplate',
+    	'access callback' => TRUE,
+    	'type' => MENU_NORMAL_ITEM,
+  	);
 
-    $items['admin/config/gusuper'] = array(
-      "title" => t("GU Super Search Settings"),
-      "description" => t("GU Super Search Settings"),
-      "page callback" => "drupal_get_form",
-      "page arguments" => array('gusuper_admin_settings'),
-      'access arguments' => array("administer gusuper settings")
-    );
-    $items['admin/config/gusuper/manage'] = array(
-      "title" => t("GU Super Search Settings"),
-      "description" => t("GU Super Search Settings"),
-      "type" => MENU_DEFAULT_LOCAL_TASK,
-      "weight" => -10
-    );
-    return $items;
+  	$items['admin/config/search/gusuper'] = array(
+    	"title" => t("GU Super Search Settings"),
+    	"description" => t("GU Super Search Settings"),
+    	"page callback" => "drupal_get_form",
+    	"page arguments" => array('gusuper_admin_settings'),
+    	'access arguments' => array("administer gusuper settings"),
+	    'type' => MENU_NORMAL_ITEM,
+  	);
+
+  	return $items;
+}
+
+
+function gusuper_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#gusuper':
+      $output = '<h3>' . t('Super Search') . '</h3>';
+      return $output;
+  }
 }
 
 
@@ -57,41 +64,52 @@ function gusuper_search_info() {
 
 
 function gusuper_search_execute($keys = NULL, $conditions = NULL) {
-    drupal_add_js(drupal_get_path('module', 'gusuper') . '/gusuper.js');
-    drupal_add_css(drupal_get_path('module', 'gusuper') . '/gusuper.css');
-    $results = array();
-    $results[] = array(
-      "title"   => "Perform search on library website only",
-      "link"    => "/search/apachesolr_search/" . $keys,
-      "snippet" => "Javascript must be enabled in order to search across all library resources."
-    );
-      return $results;
+		drupal_add_js(drupal_get_path('module', 'gusuper') . '/gusuper.js');
+		drupal_add_css(drupal_get_path('module', 'gusuper') . '/gusuper.css');
+		$results = array();
+		$results[] = array(
+			"title"   => "Perform search on library website only",
+			"link"    => $GLOBALS["base_url"] . "/search/apachesolr_search/" . $keys,
+			"snippet" => "Javascript must be enabled in order to search across all library resources."
+		);
+    	return $results;
 }
 
+function gusuper_sort($a, $b) {
+	if ($a->getVarValue("weight",5) == $b->getVarValue("weight",5)) return 0;
+	return ($a->getVarValue("weight",5) < $b->getVarValue("weight",5)) ? -1 : 1;
+}
 
 function gusuper_combotemplate() {
-  $modules = module_implements("gusuperrepos", FALSE, FALSE);
-  $repos = array();
-  foreach ($modules as $m) {
-    $repos[] = module_invoke($m, "gusuperrepos");
-  }
-  uasort($repos, "gusuper_sort");
-  
-  foreach ($repos as $ext) {
-    //if (!$ext->getVarValue("enabled", $ext->enabled)) continue;
-    $name = $ext->getVarValue("name", $ext->name);
-    $abbrev = $ext->getVarValue("abbrev", $ext->abbrev);
-    $purpose = $ext->getVarValue("purpose", $ext->purpose);
-    $header = $ext->getVarValue("header", $ext->header);
-    $weight = $ext->getVarValue("weight", $ext->weight);
-    $cssclass = $ext->getVarValue("cssclass", $ext->cssclass);
-    $domid = $ext->domid;
-    print("<div id='$domid' class='gusearch-container gusearch-container-$weight $cssclass'>");
-    print("<h2 class='gusearch'>$header</h2>");
-      print "<div class='gupurpose'>$purpose</div>";
-    print("<div class='combosearch' id='$abbrev'>Loading...</div>");
-    print("</div>");
-  }
-  
-  exit();
+	$modules = module_implements("gusuperrepos", FALSE, FALSE);
+	$repos = array();
+	foreach($modules as $m) {
+		$repos[] = module_invoke($m, "gusuperrepos");
+	}
+	uasort($repos, "gusuper_sort");
+	
+	$ic = 0;
+	foreach($repos as $ext) {
+		$ic++;
+		$cc = ($ic == 1) ? "first" : "";
+		if ($ic == count($repos)) {
+			$cc .= " last";
+		}
+		
+		//if (!$ext->getVarValue("enabled", $ext->enabled)) continue;
+		$name = $ext->getVarValue("name", $ext->name);
+		$abbrev = $ext->getVarValue("abbrev", $ext->abbrev);
+		$purpose = $ext->getVarValue("purpose", $ext->purpose);
+		$header = $ext->getVarValue("header", $ext->header);
+		$weight = $ext->getVarValue("weight", $ext->weight);
+		$cssclass = $ext->getVarValue("cssclass", $ext->cssclass); 
+		$domid = $ext->domid;
+		print("<div id='$domid' class='gusearch-container gusearch-container-$weight $cssclass $cc'>");
+		print("<h2 class='gusearch'>$header</h2>");
+    	print "<div class='gupurpose'>$purpose</div>";
+		print("<div class='combosearch' id='$abbrev'>Loading...</div>");
+		print("</div>");
+	}
+	
+	exit();
 }

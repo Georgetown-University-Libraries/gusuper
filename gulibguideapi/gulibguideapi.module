@@ -1,57 +1,54 @@
 <?php
-
-
 // $Id$
 
 /**
  * @file
  * Search interface for URL aliases.
  */
-include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.inc";
+include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
+
 
 class LibGuideRepository extends ApiXslRepository {
-  public function __construct() {
-    parent :: __construct("libguideapi", 2, "Research Guides", "Search Research Guide pages", "Start your research and get expert help");
-    $this->searchurl = "http://api.libguides.com/api_search.php?iid=1725&break=li&desc=on&sortby=relevance&more=false&search=";
-    $this->searchuiurl = "http://guides.library.georgetown.edu/search.php?iid=1725&c=0&search=";
-    $this->dispurl = "";
-    $this->xsl = drupal_get_path('module', 'gulibguideapi') . "/libguide_api.xsl";
-  }
-  public static $INSTANCE;
-  public static function getInstance() {
-    if (self :: $INSTANCE == NULL) {
-      self :: $INSTANCE = new LibGuideRepository();
-    }
-    return self :: $INSTANCE;
-  }
+	public function __construct() {
+		parent::__construct("libguideapi", 2, "Research Guides", "Search Research Guide pages", "Start your research and get expert help");
+		$this->searchurl = "http://api.libguides.com/api_search.php?iid=1725&break=li&desc=on&sortby=relevance&more=false&search=";
+		$this->searchuiurl = "http://guides.library.georgetown.edu/search.php?iid=1725&c=0&search=";
+		$this->dispurl = "";
+		$this->xsl=drupal_get_path('module', 'gulibguideapi') . "/libguide_api.xsl";
+	}
+	public static $INSTANCE;
+	public static function getInstance() {
+		if (self::$INSTANCE == null) {
+			self::$INSTANCE = new LibGuideRepository();
+		}
+		return self::$INSTANCE;
+	}
 }
 
 function gulibguideapi_gusuperrepos() {
-  return LibGuideRepository :: getInstance();
+	return LibGuideRepository::getInstance();
 }
 
 function gulibguideapi_admin_settings() {
-  $form = array();
-  $ext = LibGuideRepository :: getInstance();
-  $ext->getDefaultOptions($form);
-  $ext->getAdditionalParams($form);
-  
-  return system_settings_form($form);
+	$form = array();
+    $ext = LibGuideRepository::getInstance();
+	$ext->getDefaultOptions($form);
+	$ext->getAdditionalParams($form);
+
+	return system_settings_form($form);
 }
 
 function gulibguideapi_menu() {
-  $ext = LibGuideRepository :: getInstance();
-  $items['gusuper/' . $ext->abbrev] = array(
-    'page callback' => 'gusuper_' . $ext->abbrev,
-    'access callback' => TRUE,
-    'type' => MENU_NORMAL_ITEM,
-    
-    
-  );
-  return $ext->getConfigMenu("gulibguideapi", $items);
+    $ext = LibGuideRepository::getInstance();
+	$items['gusuper/' . $ext->abbrev] = array(
+   		'page callback' => 'gusuper_' . $ext->abbrev,
+   		'access callback' => TRUE,
+   		'type' => MENU_NORMAL_ITEM,
+	);
+	return $ext->getConfigMenu("gulibguideapi", $items);
 }
 
-function gusuper_libguideapi($query = NULL) {
-  $ext = LibGuideRepository :: getInstance();
-  $ext->performSearch($query);
+function gusuper_libguideapi($query = null) {
+    $ext = LibGuideRepository::getInstance();
+	$ext->performSearch($query);
 }

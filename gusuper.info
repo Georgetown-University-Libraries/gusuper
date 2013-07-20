@@ -1,6 +1,6 @@
 ; $Id$
-name = GU Super Search: Modules
-description = Enabling code for the Georgetown Library Website Super Search
+name = GU Super Search
 package = LIT Custom Modules
+description = Enabling code for the Georgetown Library Website Super Search
 core = 7.x
-configure = admin/config/gusuper
+configure = admin/config/search/gusuper
