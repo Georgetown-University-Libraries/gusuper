@@ -9,7 +9,7 @@
 include_once drupal_get_path('module', 'gusuper') . "/gusuperclasses.php";
 
 class DSpaceSolrRepository extends ExternalRepository {
-	public $host = "141.161.91.42";
+	public $host = "xxx"; // your solr service must be accessible
 	public $port = "80";
 	public $path = "/solr/search";
 	public $highlight = "handle,dc.identifier.uri,name,dc.title,dc.title.en_US,dc.creator,dc.date.created_dt";
