@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Gusuper : Library Website Super Search - Drupal Module" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Gusuper</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Georgetown-University-Libraries/gusuper">View on GitHub</a>
+
+          <h1 id="project_title">Gusuper</h1>
+          <h2 id="project_tagline">Library Website Super Search - Drupal Module</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Georgetown-University-Libraries/gusuper/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Georgetown-University-Libraries/gusuper/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This Drupal module provides a federated search experience across selected library resources.  Currently, those resources are
+  (1) Library Website (Drupal, via ApacheSOLR)
+  (2) LibraryGuides (SpringShare platform)
+  (3) Institutional Repository (DSpace)
+  (4) LibraryAnswers (SpringShare, not enabled)
+  (5) Institutional Repository (DSpace, SOLR Service, not enabled)</p>
+
+<p>Federated searches are launced via Ajax.  If any single service is unavailble, the other searches will be returned.</p>
+
+<p>Pre-Requisites
+  (1) ApacheSOLR module is in place
+  (2) XSLT PHP module is enabled
+  (3) SOLR client PHP module is enabled</p>
+
+<p>Installation
+  (1) Install modules
+  (2) Activate gusuper, configure module parameter
+  (3) Activate desired external services, configure module(s) parameters
+  (4) Activate search module via Drupal admin
+  (5) Apply custom CSS</p>
+
+<p>Flow
+  (1) User enters search
+  (2) Search module is invoked
+  (3) Search module returns a template listing the services to execute
+  (4) Search modules invoke Drupal callbacks via Ajax
+  (5) Federated search is executed and returned to the ajax callback</p>
+
+<p>This code is still under development for Drupal 7.  Code has not yet been refactored for use on other sites.</p>
+
+<p>You can preview the functionality at the following URL.</p>
+
+<ul>
+<li><a href="http://www.library.georgetown.edu/search/gusupersearch/test%20search">http://www.library.georgetown.edu/search/gusupersearch/test%20search</a></li>
+</ul><h1></h1>
+
+<h2>
+<a name="license-information-is-contained-below" class="anchor" href="#license-information-is-contained-below"><span class="octicon octicon-link"></span></a>License information is contained below.</h2>
+
+<p>Copyright (c) 2013, Georgetown University Libraries
+All rights reserved.</p>
+
+<p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
+
+<p>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Gusuper maintained by <a href="https://github.com/Georgetown-University-Libraries">Georgetown-University-Libraries</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-397597-14");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
