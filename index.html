@@ -31,37 +31,53 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>This Drupal module provides a federated search experience across selected library resources.  Currently, those resources are
-  (1) Library Website (Drupal, via ApacheSOLR)
-  (2) LibraryGuides (SpringShare platform)
-  (3) Institutional Repository (DSpace)
-  (4) LibraryAnswers (SpringShare, not enabled)
-  (5) Institutional Repository (DSpace, SOLR Service, not enabled)</p>
+        <p>This Drupal module provides a federated search experience across selected library resources.  Currently, those resources are</p>
 
-<p>Federated searches are launced via Ajax.  If any single service is unavailble, the other searches will be returned.</p>
+<p><img src="https://raw.github.com/Georgetown-University-Libraries/gusuper/gh-pages/images/super1.jpg" alt="Screen Shot"></p>
 
-<p>Pre-Requisites
-  (1) ApacheSOLR module is in place
-  (2) XSLT PHP module is enabled
-  (3) SOLR client PHP module is enabled</p>
+<h3>
+<a name="searchable-resources" class="anchor" href="#searchable-resources"><span class="octicon octicon-link"></span></a>Searchable Resources</h3>
 
-<p>Installation
-  (1) Install modules
-  (2) Activate gusuper, configure module parameter
-  (3) Activate desired external services, configure module(s) parameters
-  (4) Activate search module via Drupal admin
-  (5) Apply custom CSS</p>
+<ol>
+<li><p>Library Website (Drupal, via ApacheSOLR)</p></li>
+<li><p>LibraryGuides (SpringShare platform)</p></li>
+<li><p>Institutional Repository (DSpace)</p></li>
+<li><p>LibraryAnswers (SpringShare, not enabled)</p></li>
+<li><p>Institutional Repository (DSpace, SOLR Service, not enabled)</p></li>
+<li><p>Summon (coming soon!)</p></li>
+</ol><p>Federated searches are launced via Ajax.  If any single service is unavailble, the other searches will be returned.</p>
 
-<p>Flow
-  (1) User enters search
-  (2) Search module is invoked
-  (3) Search module returns a template listing the services to execute
-  (4) Search modules invoke Drupal callbacks via Ajax
-  (5) Federated search is executed and returned to the ajax callback</p>
+<h3>
+<a name="module-pre-requisites" class="anchor" href="#module-pre-requisites"><span class="octicon octicon-link"></span></a>Module Pre-Requisites</h3>
 
-<p>This code is still under development for Drupal 7.  Code has not yet been refactored for use on other sites.</p>
+<ol>
+<li><p>ApacheSOLR module is in place</p></li>
+<li><p>XSLT PHP module is enabled</p></li>
+<li><p>SOLR client PHP module is enabled</p></li>
+</ol><h3>
+<a name="module-installation" class="anchor" href="#module-installation"><span class="octicon octicon-link"></span></a>Module Installation</h3>
 
-<p>You can preview the functionality at the following URL.</p>
+<ol>
+<li><p>Install modules</p></li>
+<li><p>Activate gusuper, configure module parameter</p></li>
+<li><p>Activate desired external services, configure module(s) parameters</p></li>
+<li><p>Activate search module via Drupal admin</p></li>
+<li><p>Apply custom CSS</p></li>
+</ol><p><img src="https://raw.github.com/Georgetown-University-Libraries/gusuper/gh-pages/images/super2.jpg" alt="Screen Shot"></p>
+
+<p><img src="https://raw.github.com/Georgetown-University-Libraries/gusuper/gh-pages/images/super3.jpg" alt="Screen Shot"></p>
+
+<h3>
+<a name="module-flow" class="anchor" href="#module-flow"><span class="octicon octicon-link"></span></a>Module Flow</h3>
+
+<ol>
+<li><p>User enters search</p></li>
+<li><p>Search module is invoked</p></li>
+<li><p>Search module returns a template listing the services to execute</p></li>
+<li><p>Search modules invoke Drupal callbacks via Ajax</p></li>
+<li><p>Federated search is executed and returned to the ajax callback</p></li>
+</ol><h3>
+<a name="you-can-preview-the-functionality-at-the-following-url" class="anchor" href="#you-can-preview-the-functionality-at-the-following-url"><span class="octicon octicon-link"></span></a>You can preview the functionality at the following URL.</h3>
 
 <ul>
 <li><a href="http://www.library.georgetown.edu/search/gusupersearch/test%20search">http://www.library.georgetown.edu/search/gusupersearch/test%20search</a></li>
